@@ -1,3 +1,8 @@
+# Rubrik M365 License Calculator 1.3
+# Dec 2021 By Salvatore Buccoliero
+# Input Amount of Users and Required capacity in GB
+# Outputs minimum Required amount of 2,20,50GB Licens packs
+
 from ortools.linear_solver import pywraplp
 
 # Create the mip solver with the SCIP backend.
@@ -105,7 +110,7 @@ if status == pywraplp.Solver.OPTIMAL:
     # print('Amount of 5GB Licenses @$1.5:', int(x.solution_value()))
     # print('Amount of 20GB Licenses @$2:', int(y.solution_value()))
     # print('Amount of 50GB Licenses @$4:', int(z.solution_value()))
-    print('Amount of 5GB Licenses @$1.5:', int(SolvedRoundX))
+    print('Amount of  5GB Licenses @$1.5:', int(SolvedRoundX))
     print('Amount of 20GB Licenses @$2:', SolvedRoundY)
     print('Amount of 50GB Licenses @$4:', SolvedRoundZ)
 else:
