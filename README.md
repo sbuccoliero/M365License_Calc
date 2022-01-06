@@ -9,6 +9,8 @@ to validate OR-Tools: python -c "from ortools.linear_solver import pywraplp"
 
 To execute: python3 ./M365_License_Calc.py
 
-Also compiled to .exe
+Compiled to Windows10 executable as "M365_License_Calc.exe"
 .exe version requires Win10 platform
+
+Compiled to MacOS as "M365_License_Calc"
 To Compile: pyinstaller --onefile M365_License_Calc.py
