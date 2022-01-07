@@ -1,4 +1,4 @@
-Rubrik M365 License Calculator 1.4.1
+M365 License Calculator 1.4.1
 Dec 2021 By Salvatore Buccoliero
 Input Amount of Users and Required capacity in GB
 Outputs minimum Required amount of 2,20,50GB Licens packs
