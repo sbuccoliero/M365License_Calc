@@ -12,4 +12,7 @@
 #
 # To Compile: pyinstaller --onefile M365_License_Calc.py
 # Compiled to .exe for Windows 10 platform: "M365_License_Calc.exe" 
-# Compiled to MacOS Executable: "M365_License_Calc"
+# Compiled to MacOS Executable then zipped: "M365_License_Calc.zip"
+# Unzip the file, then run.
+# First time is must be allowed to run in Security & Privacy: "M365_License_Calc" was blocked from use because it is not from an identified developer
+# Select "Allow Anyways" 
