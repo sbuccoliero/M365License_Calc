@@ -1,9 +1,21 @@
 # coding=utf-8
-# Rubrik M365 License Calculator 1.4.1
-M365Calcversion="1.4.1"
-# Dec 2021 By Salvatore Buccoliero
+# Rubrik M365 License Calculator 0.9.4.2
+M365Calcversion="0.9.4.2"
+# Jan 2022 By Salvatore.Buccoliero@rubrik.com
 # Input Amount of Users and Required capacity in GB
 # Outputs minimum Required amount of 2,20,50GB Licens packs
+#
+# Requires Python3
+# Requires Google OR-Tools: https://developers.google.com/optimization/mip/mip_example#python
+#  to install: python -m pip install --upgrade --user ortools
+#  to validate OR-Tools: python -c "from ortools.linear_solver import pywraplp"
+#
+# To execute: python3 ./M365_License_Calc.py
+#
+# To Compile: pyinstaller --onefile M365_License_Calc.py
+# Compiled to .exe for Windows 10 platform: "M365_License_Calc.exe" 
+# Compiled to MacOS Executable: "M365_License_Calc"
+
 
 import os
 from time import sleep
@@ -193,16 +205,24 @@ if status == pywraplp.Solver.OPTIMAL:
     print(('Total Amount of Storage : '),int(SolvedTotalCapacity))
     print(('Overcapacity of Storage : '),int(OverCapacity))
     #print('Lowest Combined Price per month ($):', int(solver.Objective().Value()))
-    print('Lowest Combined Price per month ($):', int(LowestCombinedPrice))
-    print('Price Per User Per Month ($): ',PricePerUser)
+    print('Lowest List Price per month    ($):', int(LowestCombinedPrice))
+    print('Lowest List Price per Year     ($):', int(LowestCombinedPrice)*12)
+    print('Lowest List Price Per User Per Month ($): ',PricePerUser)
+    print('Lowest List Price Per User Per Year  ($): ',PricePerUser*12)
     print()
     # print('Amount of 5GB Licenses @$1.5:', int(x.solution_value()))
     # print('Amount of 20GB Licenses @$2:', int(y.solution_value()))
     # print('Amount of 50GB Licenses @$4:', int(z.solution_value()))
-    print('Amount of  5GB Licenses @$1.5:', int(SolvedRoundupX))
-    print('Amount of 20GB Licenses @$2.0:', int(LowestbyY))
-    print('Amount of 50GB Licenses @$4.0:', int(LowestbyZ))
+    print('Amount of  5GB License Packs @$1.5:', int(SolvedRoundupX/10))
+    print('Amount of 20GB License Packs @$2.0:', int(LowestbyY/10))
+    print('Amount of 50GB License Packs @$4.0:', int(LowestbyZ/10))
 else:
     print('The problem does not have an optimal solution.')
 print()
-input("Press Enter to continue...")
+
+# It is for MacOS and Linux(here, os.name is 'posix')
+if os.name == 'posix':
+    print()
+else:
+    # It is for Windows platfrom
+    input("Press Enter to continue...")
