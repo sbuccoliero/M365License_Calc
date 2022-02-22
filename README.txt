@@ -11,7 +11,7 @@
 # To execute: 
 # python3 ./M365_License_Calc.py
 #
-# If "Rubrik-M365-Sizing.html" file present it will read values and calculate from file.
+# If "Rubrik-M365-Sizing.html" file present in same directory it will read values and calculate from file.
 #
 # To execute in Automatic mode with Required users and Capacity:  
 # python3 ./M365_License_Calc.py uuu(number) ccc(number)
