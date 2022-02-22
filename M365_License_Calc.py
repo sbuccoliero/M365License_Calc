@@ -1,7 +1,7 @@
 # coding=utf-8
-# Rubrik M365 License Calculator 0.9.4.2
-M365Calcversion="0.9.4.2"
-# Jan 2022 By Salvatore.Buccoliero@rubrik.com
+# Rubrik M365 License Calculator 0.9.5.4
+M365Calcversion="0.9.5.4"
+# Febr 2022 By Salvatore.Buccoliero@rubrik.com
 # Input Amount of Users and Required capacity in GB
 # Outputs minimum Required amount of 2,20,50GB Licens packs
 #
@@ -10,17 +10,27 @@ M365Calcversion="0.9.4.2"
 #  to install: python -m pip install --upgrade --user ortools
 #  to validate OR-Tools: python -c "from ortools.linear_solver import pywraplp"
 #
-# To execute: python3 ./M365_License_Calc.py
+# To execute: 
+# python3 ./M365_License_Calc.py
+#
+# If "Rubrik-M365-Sizing.html" file present it will read values and calculate from file.
+#
+# To execute in Automatic mode with Required users and Capacity:  
+# python3 ./M365_License_Calc.py uuu(number) ccc(number)
 #
 # To Compile: pyinstaller --onefile M365_License_Calc.py
 # Compiled to .exe for Windows 10 platform: "M365_License_Calc.exe" 
 # Compiled to MacOS Executable: "M365_License_Calc"
 
 
+from ast import Not
 import os
+from pickle import FALSE, TRUE
 from time import sleep
-
 import math
+from ortools.linear_solver import pywraplp
+import sys
+import re
 
 def clear_screen():
     
@@ -37,8 +47,6 @@ clear_screen()
 print("Rubrik M365 License Calculator",M365Calcversion)
 print()
 
-from ortools.linear_solver import pywraplp
-
 # Create the mip solver with the SCIP backend.
 solver = pywraplp.Solver.CreateSolver('SCIP')
 
@@ -47,17 +55,60 @@ infinity = solver.infinity()
 x = solver.IntVar(0.0, infinity, 'x')
 y = solver.IntVar(0.0, infinity, 'y')
 z = solver.IntVar(0.0, infinity, 'z')
+ 
+# total arguments
+n = len(sys.argv)
+#print("Total arguments passed:", n)
+# Arguments passed
+#print("\nName of Python script:", sys.argv[0])
+#print("\nArguments passed:", end = " ")
+#for i in range(1, n):
+#    print(sys.argv[i], end = " ")
 
-print(" Enter Total Required Amount of Users = ")
-Users = int(input("\033[1A \033[39C"))
-print(" Enter Total Required Capacity(GB) = ")
-Capacity = int(input("\033[1A \033[37C"))
-print('Calculating....:')
-print()
+File_Input_Method_Activated=False
+if os.path.isfile('Rubrik-M365-Sizing.html'):
+    File_Input_Method_Activated=True
+#print("File_Input_Method_Activated:",bool(File_Input_Method_Activated))
+
+if (n == 3):
+    print("CMD Line Arguments entered, automatic input mode Activated")
+    #print()
+    Users = int(sys.argv[1])
+    #print("Total Required Amount of Users = ",Users)
+    Capacity = int(sys.argv[2])
+    #print("Total Required Capacity(GB) = ", Capacity)
+    #Capacity = int(input("\033[1A \033[37C"))
+    #print('Calculating....:')
+    #print()
+elif File_Input_Method_Activated:
+    print ("Rubrik-M365-Sizing.html File exist. Reading Users & Capacity")
+    #print("Reading Rubrik-M365-Sizing.html")
+    com="Required Number of Licenses"
+    with open("Rubrik-M365-Sizing.html", 'r', encoding='utf-16') as f:
+        lines = f.readlines()
+        for index, line in enumerate(lines):
+            if com in line:
+                str1 = (lines[index+9])
+                Users = int(re.search(r'\d+', str1).group())
+                #print ("Read Users: ",Users)             
+                str2 = (lines[index+10])
+                #Capacity = int("".join(filter(str.isdigit, str2)))
+                Capacity = float(re.search(r'\d+', str2).group())
+                #print ("Read Capacity: ",Capacity)
+
+
+else:
+    print(" Enter Total Required Amount of Users = ")
+    Users = int(input("\033[1A \033[39C"))
+    print(" Enter Total Required Capacity(GB) = ")
+    Capacity = int(input("\033[1A \033[37C"))
+    print('Calculating....:')
+    print()
 # Users=100
 # Capacity=1000
 
 AvgCapacityperUser =Capacity / Users
+AvgCapacityperUser = (round(AvgCapacityperUser, 2))
 
 print('Required Number of Users :', Users)
 print('Total Required Capacity :', Capacity, 'GB')
@@ -84,8 +135,8 @@ SolvedRounddownZ= z.solution_value() - (z.solution_value() % 10)
 # print('Initial 50GB Licenses @$4:', int(z.solution_value()))
 # print('Initial Lowest Price per month ($):', int(solver.Objective().Value()))
 SolvedRoundZ= round(z.solution_value()/10)*10
-print('---------------------------------')
-print()
+print('________________________________________________________________')
+#print()
 
 # Rounding Z, Second Solve
 solver.Add(  z == SolvedRoundupZ)
@@ -202,27 +253,28 @@ if status == pywraplp.Solver.OPTIMAL:
     print('Solution:')
     print(('Total Amount of Users   : '),int(SolvedTotalUsers))
     print(('Overcapacity of Users   : '),int(OverUsers))
-    print(('Total Amount of Storage : '),int(SolvedTotalCapacity))
-    print(('Overcapacity of Storage : '),int(OverCapacity))
+    print(('Total Amount of Storage : '),int(SolvedTotalCapacity),'GB') 
+    print(('Overcapacity of Storage : '),int(OverCapacity),'GB')
     #print('Lowest Combined Price per month ($):', int(solver.Objective().Value()))
-    print('Lowest List Price per month    ($):', int(LowestCombinedPrice))
-    print('Lowest List Price per Year     ($):', int(LowestCombinedPrice)*12)
-    print('Lowest List Price Per User Per Month ($): ',PricePerUser)
-    print('Lowest List Price Per User Per Year  ($): ',PricePerUser*12)
-    print()
+    print('List Price per month    ($):', int(LowestCombinedPrice))
+    print('List Price per Year     ($):', int(LowestCombinedPrice)*12)
+    print('List Price Per User Per Month ($): ', (round(PricePerUser, 2)))
+    print('List Price Per User Per Year  ($): ', (round((PricePerUser*12), 2)))
+    #print()
     # print('Amount of 5GB Licenses @$1.5:', int(x.solution_value()))
     # print('Amount of 20GB Licenses @$2:', int(y.solution_value()))
     # print('Amount of 50GB Licenses @$4:', int(z.solution_value()))
-    print('Amount of  5GB License Packs @$1.5:', int(SolvedRoundupX/10))
-    print('Amount of 20GB License Packs @$2.0:', int(LowestbyY/10))
-    print('Amount of 50GB License Packs @$4.0:', int(LowestbyZ/10))
+    print(' 5GB License Packs @$1.5:', int(SolvedRoundupX/10))
+    print('20GB License Packs @$2.0:', int(LowestbyY/10))
+    print('50GB License Packs @$4.0:', int(LowestbyZ/10))
 else:
     print('The problem does not have an optimal solution.')
-print()
+#print()
 
 # It is for MacOS and Linux(here, os.name is 'posix')
-if os.name == 'posix':
-    print()
-else:
-    # It is for Windows platfrom
-    input("Press Enter to continue...")
+# if os.name == 'posix':
+#    print()
+#else:
+# It is for Windows platfrom
+print('________________________________________________________________')
+input("Copy Output, Then Press Enter to Exit Solver...")
