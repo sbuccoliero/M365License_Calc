@@ -3,7 +3,7 @@
 M365Calcversion="2.12"
 # June 2022 By Salvatore.Buccoliero@rubrik.com
 # Input Amount of Users and Required capacity in GB
-# Outputs minimum Required amount of 2,20,50GB,Unlimited Licens packs
+# Outputs minimum Required amount of 2,20,50GB,Unlimited Subscriptions
 #
 # Requires Python3
 # 
