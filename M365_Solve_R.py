@@ -1,7 +1,6 @@
 # coding=utf-8
-# Rubrik M365 License Calculator 2.0
-M365Calcversion="2.11"
-# May 2022 By Salvatore.Buccoliero@rubrik.com
+M365Calcversion="2.12"
+# June 2022 By Salvatore.Buccoliero@rubrik.com
 # Input Amount of Users and Required capacity in GB
 # Outputs minimum Required amount of 2,20,50GB Licens packs
 #
@@ -113,74 +112,51 @@ print('Required Number of Users :', Users)
 print('Total Required Capacity :', Capacity, 'GB')
 print('Average Capacity Required per User:', AvgCapacityperUser, 'GB')
 
-# CURL LookupResult
-print ('Querying solver using HTML...')
-url = "https://m365licsolver-azure.azurewebsites.net:/api/httpexample"
-headers = CaseInsensitiveDict()
-headers["Content-Type"] = "application/json"
-data = '{"users":"'+str(Users)+'","data":"'+str(Capacity)+'"}'
-#print ('data: ',data)
-#print ('data1: ',data1)
-resp = requests.post(url, headers=headers, data=data)
-#print(resp.status_code)
-#print(resp._content)
-mumbo=resp._content
-html = mumbo.decode('utf-8')
+if (AvgCapacityperUser > 76):
+    print('AvgCapacity Over 76, Unlimited is the best option')
+    SolvedRoundupX=0
+    LowestbyY=0
+    LowestbyZ=0
+    UnlimitedGBPacks=math.ceil((Users) / 10)
+    SolvedTotalUsers = (UnlimitedGBPacks * 10)
+    OverUsers = SolvedTotalUsers - Users
+    SolvedTotalCapacity = Capacity
+    OverCapacity = Capacity
+    LowestCombinedPrice = (UnlimitedGBPacks * 10* 6)
+    PricePerUser = LowestCombinedPrice / SolvedTotalUsers
+else:
 
-#print(html)
-new_result = re.findall(r'\d+', html)
-#print(new_result)
-SolvedRoundupX=int(new_result[0])*10
-LowestbyY=int(new_result[1])*10
-LowestbyZ= int(new_result[2])*10
-# for x in re.search(br'\d+', html):
-#  print(x)
+    # CURL LookupResult
+    print ('Querying solver using HTML...')
+    url = "https://m365licsolver-azure.azurewebsites.net:/api/httpexample"
+    headers = CaseInsensitiveDict()
+    headers["Content-Type"] = "application/json"
+    data = '{"users":"'+str(Users)+'","data":"'+str(Capacity)+'"}'
+    #print ('data: ',data)
+    #print ('data1: ',data1)
+    resp = requests.post(url, headers=headers, data=data)
+    #print(resp.status_code)
+    #print(resp._content)
+    mumbo=resp._content
+    html = mumbo.decode('utf-8')
 
+    #print(html)
+    new_result = re.findall(r'\d+', html)
+    #print(new_result)
+    SolvedRoundupX=int(new_result[0])*10
+    LowestbyY=int(new_result[1])*10
+    LowestbyZ= int(new_result[2])*10
+    UnlimitedGBPacks=0
+    SolvedTotalUsers = SolvedRoundupX + LowestbyY + LowestbyZ
+    SolvedTotalCapacity = ((SolvedRoundupX*5) + (LowestbyY*20) + (LowestbyZ*50))
 
-# Users5GB = int(re.search(br'\d+', mumbo).group())
-
-# WORKS!
-# new_result = re.findall(br'\d+', mumbo)
-# for x in re.search(br'\d+', html):
-#  print(x)
-
-#counter_packs=1
-#for s in re.findall(r'\b\d+\b', html):
-#    x = re.sub("b", "", s)
-#Packs[counter_packs]=s
-#print(Packs[counter_packs])
-#    print(s)
-    
-#input("How does it lookAA?...")
-
-#print(new_result)
-
-#print("users5GB:", Users5GB)
-
-#string1 = "498results should get"
-#>>> int(re.search(r'\d+', string1).group())
-#498
-#If there are multiple integers in the string:
-#>>> map(int, re.findall(r'\d+', string1))
-
-
-
-
-
-
-
-# SolvedRoundX= round(x.solution_value()/10)*10
-# print('4th solve 5GB Licenses @$1.5:', SolvedRoundupX)
-SolvedTotalUsers = SolvedRoundupX + LowestbyY + LowestbyZ
-SolvedTotalCapacity = ((SolvedRoundupX*5) + (LowestbyY*20) + (LowestbyZ*50))
-
-OverUsers = SolvedTotalUsers - Users
-OverCapacity = SolvedTotalCapacity - Capacity
-LowestCombinedPrice = (SolvedRoundupX * 1.5)  + (LowestbyY * 2) + (LowestbyZ * 4)
-PricePerUser = LowestCombinedPrice / SolvedTotalUsers 
-LicenseonlyTeamsAndSharepoint = math.ceil((Capacity / 50) / 10) * 10
-LicenseonlyTeamsAndSharepoint = int(LicenseonlyTeamsAndSharepoint/10)
-LicenseonlyTeamsAndSharepointCapacity = LicenseonlyTeamsAndSharepoint * 10 * 50
+    OverUsers = SolvedTotalUsers - Users
+    OverCapacity = SolvedTotalCapacity - Capacity
+    LowestCombinedPrice = (SolvedRoundupX * 1.5)  + (LowestbyY * 2) + (LowestbyZ * 4)
+    PricePerUser = LowestCombinedPrice / SolvedTotalUsers 
+    LicenseonlyTeamsAndSharepoint = math.ceil((Capacity / 50) / 10) * 10
+    LicenseonlyTeamsAndSharepoint = int(LicenseonlyTeamsAndSharepoint/10)
+    LicenseonlyTeamsAndSharepointCapacity = LicenseonlyTeamsAndSharepoint * 10 * 50
 
 
 print('Solution:')
@@ -197,13 +173,14 @@ print('List Price Per User Per Year  ($): ', (round((PricePerUser*12), 2)))
 # print('Amount of 5GB Licenses @$1.5:', int(x.solution_value()))
 # print('Amount of 20GB Licenses @$2:', int(y.solution_value()))
 # print('Amount of 50GB Licenses @$4:', int(z.solution_value()))
-print(' 5GB License Packs @$1.5:', int(SolvedRoundupX/10), '- ', (int(SolvedRoundupX/10))*10,' Users')
-print('20GB License Packs @$2.0:', int(LowestbyY/10), '- ', (int(LowestbyY/10))*10,' Users')
-print('50GB License Packs @$4.0:', int(LowestbyZ/10), '- ', (int(LowestbyZ/10))*10,' Users')
-print('________________________________________________________________________________')
+print(' 5GB Subscriptions ...... @$1.5:', int(SolvedRoundupX/10), ', ', (int(SolvedRoundupX/10))*10,' Users')
+print('20GB Subscriptions ...... @$2.0:', int(LowestbyY/10), ', ', (int(LowestbyY/10))*10,' Users')
+print('50GB Subscriptions ...... @$4.0:', int(LowestbyZ/10), ', ', (int(LowestbyZ/10))*10,' Users')
+print('UnlimitedGB Subscriptions @$6.0:', int(UnlimitedGBPacks), ', ', (int(UnlimitedGBPacks))*10,' Users')
+#print('________________________________________________________________________________')
 # print()
-print('Min 50GB Licenses to cover only Teams and Sharepoint (NO Mailbox & Onedrive):', LicenseonlyTeamsAndSharepoint)
-print('Capacity provided for those', LicenseonlyTeamsAndSharepoint * 10, 'Licenses:',  LicenseonlyTeamsAndSharepointCapacity )
+#print('Min 50GB Licenses to cover only Teams and Sharepoint (NO Mailbox & Onedrive):', LicenseonlyTeamsAndSharepoint)
+#print('Capacity provided for those', LicenseonlyTeamsAndSharepoint * 10, 'Licenses:',  LicenseonlyTeamsAndSharepointCapacity )
 
 
 # It is for MacOS and Linux(here, os.name is 'posix')
