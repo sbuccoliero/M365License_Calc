@@ -1,6 +1,6 @@
 # coding=utf-8
 # Rubrik M365 License Calculator 2.0
-M365Calcversion="2.0"
+M365Calcversion="2.11"
 # May 2022 By Salvatore.Buccoliero@rubrik.com
 # Input Amount of Users and Required capacity in GB
 # Outputs minimum Required amount of 2,20,50GB Licens packs
@@ -115,11 +115,10 @@ print('Average Capacity Required per User:', AvgCapacityperUser, 'GB')
 
 # CURL LookupResult
 print ('Querying solver using HTML...')
-url = "http://185.15.74.132:43081/users"
+url = "https://m365licsolver-azure.azurewebsites.net:/api/httpexample"
 headers = CaseInsensitiveDict()
 headers["Content-Type"] = "application/json"
-#data = '{"users":"3121","Data":"36393"}'
-data = '{"users":"'+str(Users)+'","Data":"'+str(Capacity)+'"}'
+data = '{"users":"'+str(Users)+'","data":"'+str(Capacity)+'"}'
 #print ('data: ',data)
 #print ('data1: ',data1)
 resp = requests.post(url, headers=headers, data=data)
