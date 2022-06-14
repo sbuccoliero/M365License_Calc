@@ -5,7 +5,7 @@ M365Calcversion="2.12"
 # Input Amount of Users and Required capacity in GB
 # Outputs minimum Required amount of 2,20,50GB,Unlimited Subscriptions
 #
-# Requires Python3
+# Requires Python3 as a python script. Alternatively the binary can be downloaded for Windows or Mac and requires no python.
 # 
 # To execute: 
 # python3 ./M365_Solve_R.py
