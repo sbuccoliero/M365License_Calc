@@ -1,8 +1,8 @@
 # coding=utf-8
-M365Calcversion="2.12"
-# June 2022 By Salvatore.Buccoliero@rubrik.com
+M365Calcversion="2.13"
+# June 2023 By Salvatore.Buccoliero@rubrik.com
 # Input Amount of Users and Required capacity in GB
-# Outputs minimum Required amount of 2,20,50GB Licens packs
+# Outputs minimum Required amount of 2,20,50GB,Unlimited Subscriptions
 #
 # Requires Python3
 # 
@@ -173,10 +173,10 @@ print('List Price Per User Per Year  ($): ', (round((PricePerUser*12), 2)))
 # print('Amount of 5GB Licenses @$1.5:', int(x.solution_value()))
 # print('Amount of 20GB Licenses @$2:', int(y.solution_value()))
 # print('Amount of 50GB Licenses @$4:', int(z.solution_value()))
-print(' 5GB Subscriptions ...... @$1.5:', int(SolvedRoundupX/10), ', ', (int(SolvedRoundupX/10))*10,' Users')
-print('20GB Subscriptions ...... @$2.0:', int(LowestbyY/10), ', ', (int(LowestbyY/10))*10,' Users')
-print('50GB Subscriptions ...... @$4.0:', int(LowestbyZ/10), ', ', (int(LowestbyZ/10))*10,' Users')
-print('UnlimitedGB Subscriptions @$6.0:', int(UnlimitedGBPacks), ', ', (int(UnlimitedGBPacks))*10,' Users')
+print(' 5GB Subscriptions ...... @$0.95:', int(SolvedRoundupX/10), ', ', (int(SolvedRoundupX/10))*10,' Users')
+print('20GB Subscriptions ...... @$1.25:', int(LowestbyY/10), ', ', (int(LowestbyY/10))*10,' Users')
+print('50GB Subscriptions ...... @$2.50:', int(LowestbyZ/10), ', ', (int(LowestbyZ/10))*10,' Users')
+print('UnlimitedGB Subscriptions @$3.80:', int(UnlimitedGBPacks), ', ', (int(UnlimitedGBPacks))*10,' Users')
 #print('________________________________________________________________________________')
 # print()
 #print('Min 50GB Licenses to cover only Teams and Sharepoint (NO Mailbox & Onedrive):', LicenseonlyTeamsAndSharepoint)
